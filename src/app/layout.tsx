@@ -3,6 +3,7 @@ import "./globals.css";
 import { sansFont, serifFont } from '@/lib/fonts'
 import { BfcacheOptimizer } from '@/components/common/BfcacheOptimizer'
 import ShiroHeader from '@/components/headers/ShiroHeader'
+import { AccentColorStyleInjector } from '@/components/modules/shared/AccentColorStyleInjector'
 import { WebAppProviders } from '@/providers/root'
 
 export const metadata: Metadata = {
@@ -19,6 +20,7 @@ export default function RootLayout({
     <html lang="en" data-theme="light">
       <body className={`${sansFont.variable} ${serifFont.variable} ${sansFont.className} m-0 h-full p-0 font-sans`}>
         <WebAppProviders>
+          <AccentColorStyleInjector />
           <BfcacheOptimizer />
           <ShiroHeader />
           {children}

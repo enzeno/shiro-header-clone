@@ -240,7 +240,7 @@ const twConfig: Config = {
           // 浅葱
           primary: '#33A6B8',
           secondary: '#A8D8B9',
-          accent: '#33A6B8',
+          accent: 'oklch(var(--a))',
           'accent-content': '#fafafa',
 
           neutral: UIKitColors.grey3.light,
@@ -265,7 +265,7 @@ const twConfig: Config = {
           primary: '#F596AA',
           // 洗朱
           secondary: '#FB966E',
-          accent: '#F596AA',
+          accent: 'oklch(var(--a))',
 
           neutral: UIKitColors.grey3.dark,
 
