@@ -6,89 +6,30 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  // Performance optimizations
+  reactStrictMode: true,
   experimental: {
-    optimizePackageImports: [
-      '@radix-ui/react-dialog',
-      '@radix-ui/react-dropdown-menu',
-      '@floating-ui/react',
-      '@floating-ui/react-dom',
-      '@tanstack/react-query',
-      'motion',
-      'jotai',
-      'clsx',
-      'tailwind-merge'
-    ],
+    serverMinification: true,
+    webpackBuildWorker: true,
+    // optimizePackageImports: ['dayjs'], // Commented out like original - NO MOTION OPTIMIZATION!
   },
-  // Enable compression
-  compress: true,
-  // Optimize images
   images: {
-    formats: ['image/webp', 'image/avif'],
-    minimumCacheTTL: 60,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
+    dangerouslyAllowSVG: true,
+    contentSecurityPolicy:
+      "default-src 'self'; script-src 'none'; sandbox; style-src 'unsafe-inline';",
   },
-  // Headers for better caching and bfcache compatibility
-  async headers() {
-    return [
-      {
-        // Static assets (long cache)
-        source: '/_next/static/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
-      {
-        // Images and fonts
-        source: '/(.*)\\.(png|jpg|jpeg|gif|webp|svg|woff|woff2|ico)$',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=86400, stale-while-revalidate=86400',
-          },
-        ],
-      },
-      {
-        // HTML pages (shorter cache to allow updates)
-        source: '/((?!api|_next/static).*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=0, s-maxage=86400, stale-while-revalidate=86400',
-          },
-        ],
-      },
-    ];
+  webpack: (config) => {
+    config.externals.push({
+      'utf-8-validate': 'commonjs utf-8-validate',
+      bufferutil: 'commonjs bufferutil',
+    })
+    return config
   },
-  // Enable bundle analyzer when ANALYZE=true
-  ...(process.env.ANALYZE === 'true' && {
-    webpack: (config, { isServer }) => {
-      if (!isServer) {
-        config.resolve.fallback = {
-          ...config.resolve.fallback,
-          fs: false,
-        };
-      }
-      return config;
-    },
-  }),
-  // Production optimizations
-  ...(process.env.NODE_ENV === 'production' && {
-    swcMinify: true,
-    modularizeImports: {
-      '@radix-ui/react-dialog': {
-        transform: '@radix-ui/react-dialog/{{member}}',
-      },
-      '@radix-ui/react-dropdown-menu': {
-        transform: '@radix-ui/react-dropdown-menu/{{member}}',
-      },
-      '@floating-ui/react': {
-        transform: '@floating-ui/react/{{member}}',
-      },
-    },
-  }),
 };
 
 export default nextConfig;

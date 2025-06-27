@@ -29,11 +29,11 @@ export const useHeaderBgOpacity = () => {
   return usePageScrollLocationSelector(
     (y) => {
       if (y < threshold) return 0
-      if (headerShouldShowBg) {
-        if (y >= threshold + distance) return 1
-        return Math.floor(((y - threshold) / distance) * 100) / 100
-      }
-      return 0
+      return headerShouldShowBg
+        ? y >= distance + threshold
+          ? 1
+          : Math.floor(((y - threshold) / distance) * 100) / 100
+        : 0
     },
     [headerShouldShowBg],
   )

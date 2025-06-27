@@ -24,6 +24,7 @@ export interface IHeaderMenu {
   subMenu?: Omit<IHeaderMenu, 'exclude'>[]
   exclude?: string[]
 }
+
 export const headerMenuConfig: IHeaderMenu[] = [
   {
     title: '首页',
@@ -72,7 +73,7 @@ export const headerMenuConfig: IHeaderMenu[] = [
         path: '/notes/topics',
         icon: h('i', {
           className: 'i-mingcute-align-bottom-fill flex center',
-        })
+        }),
       },
     ],
   },

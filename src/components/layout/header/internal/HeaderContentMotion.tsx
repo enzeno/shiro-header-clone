@@ -53,7 +53,7 @@ const AccessibleMenu: Component = () => {
             exit={{ y: -20, opacity: 0 }}
             className="pointer-events-none fixed inset-x-0 top-12 z-10 mr-[var(--removed-body-scroll-bar-size)] flex justify-center"
           >
-            <ForDesktop animatedIcon={false} />
+            <ForDesktop />
           </m.div>
         )}
       </AnimatePresence>
@@ -169,7 +169,7 @@ const HeaderMenuItem = memo<{
         <span className="relative flex items-center">
           {isActive && (
             <m.span
-              layoutId={iconLayout ? 'header-menu-icon' : undefined}
+              layoutId={iconLayout ? `header-menu-icon-${section.title}` : undefined}
               className="mr-2 flex items-center"
             >
               {subItemActive?.icon ?? section.icon}

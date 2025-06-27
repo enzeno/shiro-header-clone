@@ -1,26 +1,20 @@
-import { Inter } from 'next/font/google'
-import localFont from 'next/font/local'
+import { Manrope, Noto_Serif_SC } from 'next/font/google'
 
-// Using Inter as a web-safe alternative to Manrope
-export const sansFont = Inter({
+const sansFont = Manrope({
   subsets: ['latin'],
+  weight: ['300', '400', '500'],
   variable: '--font-sans',
   display: 'swap',
-  preload: true,
-  fallback: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+  fallback: ['system-ui', '-apple-system', 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', 'Roboto', 'Helvetica', 'noto sans sc', 'hiragino sans gb', 'sans-serif'],
 })
 
-// Using local Geist font files for serif
-export const serifFont = localFont({
-  src: [
-    {
-      path: '../app/fonts/GeistVF.woff',
-      weight: '100 900',
-      style: 'normal',
-    },
-  ],
+const serifFont = Noto_Serif_SC({
+  subsets: ['latin'],
+  weight: ['400'],
   variable: '--font-serif',
   display: 'swap',
-  preload: true,
-  fallback: ['Georgia', 'Times New Roman', 'serif'],
-}) 
+  // adjustFontFallback: false,
+  fallback: ['Noto Serif SC'],
+})
+
+export { sansFont, serifFont } 

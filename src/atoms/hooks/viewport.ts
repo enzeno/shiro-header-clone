@@ -3,6 +3,8 @@ import { useAtomValue } from 'jotai'
 import { selectAtom } from 'jotai/utils'
 import { useCallback } from 'react'
 
+import { jotaiStore } from '@/lib/store'
+
 import { viewportAtom } from '../viewport'
 
 export const useViewport = <T>(
@@ -22,18 +24,9 @@ export const useIsMobile = () =>
 
 const isMobile = (v: ExtractAtomValue<typeof viewportAtom>) =>
   (v.sm || v.md || !v.sm) && !v.lg
-
 export const currentIsMobile = () => {
-  // Mock implementation for now
-  return window.innerWidth < 1024
+  const v = jotaiStore.get(viewportAtom)
+  return isMobile(v)
 }
 
-export const getViewport = () => ({
-  sm: window.innerWidth >= 640,
-  md: window.innerWidth >= 768,
-  lg: window.innerWidth >= 1024,
-  xl: window.innerWidth >= 1280,
-  '2xl': window.innerWidth >= 1536,
-  h: window.innerHeight,
-  w: window.innerWidth,
-}) 
+export const getViewport = () => jotaiStore.get(viewportAtom) 

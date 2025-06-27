@@ -318,7 +318,7 @@
 }
 
 html {
-  --font-sans: system-ui, -apple-system, PingFang SC, "Microsoft YaHei", Segoe UI, Roboto, Helvetica, "noto sans sc", "hiragino sans gb", "sans-serif", Apple Color Emoji, Segoe UI Emoji, Not Color Emoji;
+  --font-sans: theme('fontFamily.sans');
 
   /* Accent color for form controls */
   accent-color: theme(colors.accent);

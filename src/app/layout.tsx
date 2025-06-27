@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { sansFont } from '@/lib/fonts'
+import { sansFont, serifFont } from '@/lib/fonts'
 import { BfcacheOptimizer } from '@/components/common/BfcacheOptimizer'
 import ShiroHeader from '@/components/headers/ShiroHeader'
 import { WebAppProviders } from '@/providers/root'
@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-theme="light">
-      <body className={`${sansFont.variable} ${sansFont.className} m-0 h-full p-0 font-sans`}>
+      <body className={`${sansFont.variable} ${serifFont.variable} ${sansFont.className} m-0 h-full p-0 font-sans`}>
         <WebAppProviders>
           <BfcacheOptimizer />
           <ShiroHeader />
