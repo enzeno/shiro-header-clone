@@ -4,7 +4,7 @@ import clsx from 'clsx'
 import {
   AnimatePresence,
   LayoutGroup,
-  motion as m,
+  m,
   useMotionTemplate,
   useMotionValue,
 } from 'motion/react'
@@ -17,11 +17,10 @@ import { RootPortal } from '@/components/ui/portal'
 import useDebounceValue from '@/hooks/common/use-debounce-value'
 import { clsxm } from '@/lib/helper'
 import { useIsScrollUpAndPageIsOver } from '@/providers/root/page-scroll-info-provider'
-import { microReboundPreset } from '@/constants/spring'
 
 import type { IHeaderMenu } from '../config'
 import { useHeaderConfig } from './HeaderDataConfigureProvider'
-import { useHeaderHasMetaInfo, useMenuOpacity, useHeaderBgOpacity } from './hooks'
+import { useHeaderHasMetaInfo, useMenuOpacity } from './hooks'
 import { MenuPopover } from './MenuPopover'
 
 // Main motion-enabled header content
@@ -64,21 +63,15 @@ const AccessibleMenu: Component = () => {
 
 const AnimatedMenu: Component = ({ children }) => {
   const opacity = useMenuOpacity()
-  const headerOpacity = useHeaderBgOpacity()
   const hasMetaInfo = useHeaderHasMetaInfo()
-  
-  // Determine if we should hide the nav background
-  const shouldHideNavBg = !hasMetaInfo || headerOpacity < 0.9
-  
-  // Determine menu visibility
-  const menuVisible = headerOpacity < 0.9 || !hasMetaInfo
+  const shouldHideNavBg = !hasMetaInfo && opacity === 0
   
   return (
     <m.div
       className="duration-100"
       style={{
         opacity: hasMetaInfo ? opacity : 1,
-        visibility: menuVisible ? 'visible' : 'hidden',
+        visibility: opacity === 0 && hasMetaInfo ? 'hidden' : 'visible',
       }}
     >
       {/* @ts-ignore */}
@@ -173,13 +166,7 @@ const HeaderMenuItem = memo<{
         isActive={isActive}
         className="transition-[padding]"
       >
-        <m.span 
-          className="relative flex items-center"
-          layout
-          transition={{
-            layout: microReboundPreset
-          }}
-        >
+        <span className="relative flex items-center">
           {isActive && (
             <m.span
               layoutId={iconLayout ? 'header-menu-icon' : undefined}
@@ -188,8 +175,8 @@ const HeaderMenuItem = memo<{
               {subItemActive?.icon ?? section.icon}
             </m.span>
           )}
-          <span>{subItemActive?.title ?? section.title}</span>
-        </m.span>
+          <m.span layout>{subItemActive?.title ?? section.title}</m.span>
+        </span>
       </AnimatedItem>
     </MenuPopover>
   )

@@ -47,10 +47,9 @@ const headerMetaShouldShowAtom = atom((get) => {
 })
 
 export const useHeaderMetaShouldShow = () => {
-  const headerOpacity = useHeaderBgOpacity()
-  const hasMetaInfo = useAtomValue(headerMetaShouldShowAtom)
-  
-  return hasMetaInfo && headerOpacity > 0.9
+  const v = useMenuVisibility()
+
+  return useAtomValue(headerMetaShouldShowAtom) && !v
 }
 
 export const useSetHeaderMetaInfo = () => {
