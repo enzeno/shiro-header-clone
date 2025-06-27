@@ -1,7 +1,8 @@
 'use client'
 
 import { LazyMotion } from 'motion/react'
-import type { JSX, PropsWithChildren } from 'react'
+import type { PropsWithChildren } from 'react'
+import type { JSX } from 'react'
 
 import { ProviderComposer } from '@/components/common/ProviderComposer'
 import { ReactQueryProvider } from '../query-provider'
@@ -14,12 +15,12 @@ const loadFeatures = () =>
   import('./framer-lazy-feature').then((res) => res.default)
 
 const baseContexts: JSX.Element[] = [
-  <JotaiStoreProvider key="jotaiStoreProvider" />,
-  <LazyMotion features={loadFeatures} strict key="framer" />,
+  <JotaiStoreProvider key="jotaiStoreProvider">{null}</JotaiStoreProvider>,
+  <LazyMotion features={loadFeatures} strict key="framer">{null}</LazyMotion>,
 ]
 
 const webappContexts: JSX.Element[] = [
-  <ReactQueryProvider key="reactQueryProvider" />,
+  <ReactQueryProvider key="reactQueryProvider">{null}</ReactQueryProvider>,
   ...baseContexts,
 ]
 

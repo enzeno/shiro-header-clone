@@ -29,6 +29,16 @@ interface AggregationData {
     title: string
     description: string
   }
+  pageMeta?: Array<{
+    title: string
+    description?: string
+    slug: string
+  }>
+  categories?: Array<{
+    id: string
+    name: string
+    slug: string
+  }>
 }
 
 const defaultAppConfig: AppConfig = {

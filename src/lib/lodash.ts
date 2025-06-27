@@ -117,8 +117,8 @@ export const isShallowEqualArray = <T>(arr1: T[], arr2: T[]): boolean => {
     return false
   }
 
-  for (const [i, element] of arr1.entries()) {
-    if (!Object.is(element, arr2[i])) {
+  for (let i = 0; i < arr1.length; i++) {
+    if (!Object.is(arr1[i], arr2[i])) {
       return false
     }
   }

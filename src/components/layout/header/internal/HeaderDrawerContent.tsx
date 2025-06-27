@@ -1,5 +1,4 @@
 'use client'
-'use client'
 
 import { m } from 'motion/react'
 import Link from '@/components/next-shims'
@@ -53,13 +52,18 @@ export const HeaderDrawerContent = () => {
   )
 }
 
-const LinkInternal: typeof Link = memo(function LinkInternal({
+const LinkInternal = memo(function LinkInternal({
+  href,
   children,
   ...rest
+}: {
+  href: string
+  children: React.ReactNode
+  [key: string]: any
 }) {
   const { dismiss } = useSheetContext()
   return (
-    <Link {...rest} onClick={dismiss}>
+    <Link href={href} {...rest} onClick={dismiss}>
       {children}
     </Link>
   )

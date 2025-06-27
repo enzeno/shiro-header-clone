@@ -19,6 +19,7 @@ export const ViewportProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         lg: w >= 1024,
         xl: w >= 1280,
         '2xl': w >= 1536,
+        mobile: w < 1024,
         w,
         h,
       })

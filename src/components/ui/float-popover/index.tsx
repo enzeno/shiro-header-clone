@@ -261,7 +261,7 @@ const RealFloatPopover = function FloatPopover<T extends {}>(
 
       <AnimatePresence>
         {open && (
-          <RootPortal to={to}>
+          <RootPortal>
             <m.div
               className={clsxm(
                 'float-popover',

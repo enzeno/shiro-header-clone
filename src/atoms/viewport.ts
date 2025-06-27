@@ -26,6 +26,11 @@ export const viewportAtom = atom({
    */
   '2xl': false,
 
+  /**
+   * Mobile viewport (< 1024px)
+   */
+  mobile: true,
+
   h: 0,
   w: 0,
 }) 
