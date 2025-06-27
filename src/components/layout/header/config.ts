@@ -15,7 +15,6 @@ import {
   MdiLightbulbOn20,
   RMixPlanet,
 } from '@/components/icons/menu-collection'
-import { AlignBottomIcon } from '@/components/icons/AlignBottomIcon'
 
 export interface IHeaderMenu {
   title: string
@@ -31,12 +30,7 @@ export const headerMenuConfig: IHeaderMenu[] = [
     path: '/',
     type: 'Home',
     icon: h(FaSolidDotCircle),
-    subMenu: [
-      {
-        title: '自述',
-        path: '/about',
-      },
-    ],
+    subMenu: [],
   },
   {
     title: '文稿',
@@ -76,7 +70,9 @@ export const headerMenuConfig: IHeaderMenu[] = [
       {
         title: '专栏',
         path: '/notes/topics',
-        icon: h(AlignBottomIcon)
+        icon: h('i', {
+          className: 'i-mingcute-align-bottom-fill flex center',
+        })
       },
     ],
   },

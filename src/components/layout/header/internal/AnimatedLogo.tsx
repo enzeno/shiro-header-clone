@@ -1,7 +1,7 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
-import { AnimatePresence, motion as m } from 'motion/react'
+import { AnimatePresence, m } from 'motion/react'
 import { useRouter } from '@/lib/next-shims'
 import { useCallback } from 'react'
 

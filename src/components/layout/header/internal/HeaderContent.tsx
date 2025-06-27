@@ -4,7 +4,7 @@ import clsx from 'clsx'
 import {
   AnimatePresence,
   LayoutGroup,
-  motion as m,
+  m,
   useMotionTemplate,
   useMotionValue,
 } from 'motion/react'

@@ -1,7 +1,7 @@
 'use client'
 'use client'
 
-import { motion as m } from 'motion/react'
+import { m } from 'motion/react'
 import Link from '@/components/next-shims'
 import { memo } from 'react'
 

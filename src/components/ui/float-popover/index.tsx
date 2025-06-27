@@ -9,7 +9,7 @@ import {
   shift,
   useFloating,
 } from '@floating-ui/react'
-import { AnimatePresence, motion as m } from 'motion/react'
+import { AnimatePresence, m } from 'motion/react'
 import type { FC, PropsWithChildren, ReactElement } from 'react'
 import * as React from 'react'
 import {

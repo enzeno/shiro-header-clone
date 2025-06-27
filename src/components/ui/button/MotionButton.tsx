@@ -2,7 +2,7 @@
 'use client'
 
 import type { HTMLMotionProps } from 'motion/react'
-import { motion as m } from 'motion/react'
+import { m } from 'motion/react'
 import { forwardRef } from 'react'
 
 export const MotionButtonBase = forwardRef<

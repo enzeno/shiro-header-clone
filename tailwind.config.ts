@@ -1,9 +1,11 @@
-const path = require('path')
-
 import './plugins/tw-css-plugin'
-import(path.resolve(__dirname, './src/styles/layer.css'))
+
+import { getIconCollections, iconsPlugin } from '@egoist/tailwindcss-icons'
+import typography from '@tailwindcss/typography'
 import daisyui from 'daisyui'
+import { withTV } from 'tailwind-variants/transformer'
 import type { Config } from 'tailwindcss'
+import { neutral } from 'tailwindcss/colors'
 
 const UIKitColors = {
   red: {
@@ -79,19 +81,15 @@ const UIKitColors = {
     dark: '#1C1C1E',
   },
 
-  // Background
-  background: {
-    primary: {
-      light: '#fff',
-      dark: '#1C1C1E',
+  // Separator
+  separator: {
+    opaque: {
+      light: '#C6C6C8',
+      dark: '#38383A',
     },
-    secondary: {
-      light: '#F2F2F7',
-      dark: '#2C2C2E',
-    },
-    tertiary: {
-      light: '#FFFFFF',
-      dark: '#3A3A3C',
+    non_opaque: {
+      light: 'rgba(60, 60, 67, 0.36)',
+      dark: 'rgba(84, 84, 88, 0.65)',
     },
   },
 
@@ -114,43 +112,147 @@ const UIKitColors = {
       dark: '#EBEBF529',
     },
   },
+
+  // Background
+  background: {
+    primary: {
+      light: '#fff',
+      dark: '#1C1C1E',
+    },
+    secondary: {
+      light: '#F2F2F7',
+      dark: '#2C2C2E',
+    },
+    tertiary: {
+      light: '#FFFFFF',
+      dark: '#3A3A3C',
+    },
+  },
+
+  // Grouped Background
+  grouped: {
+    primary: {
+      light: '#F2F2F7',
+      dark: '#1C1C1E',
+    },
+    secondary: {
+      light: '#FFFFFF',
+      dark: '#2C2C2E',
+    },
+    tertiary: {
+      light: '#F2F2F7',
+      dark: '#3A3A3C',
+    },
+  },
+
+  // Fill
+  fill: {
+    primary: {
+      light: '#78788033',
+      dark: '#7878805C',
+    },
+    secondary: {
+      light: '#78788029',
+      dark: '#78788052',
+    },
+    tertiary: {
+      light: '#7676801F',
+      dark: '#7676803D',
+    },
+    quarternary: {
+      light: '#74748014',
+      dark: '#7474802E',
+    },
+  },
 }
 
-const config: Config = {
+const twConfig: Config = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   darkMode: ['class', '[data-theme="dark"]'],
+  safelist: [
+    'font-light',
+    'text-3xl',
+    'rounded',
+    'p-1',
+    'bg-gray-200',
+    'dark:bg-gray-800/0',
+    'hover:dark:bg-gray-800/100',
+    'bg-opacity-0',
+    'hover:bg-opacity-100',
+    'transition-background',
+
+    'w-[1px]',
+    'h-8',
+    '-bottom-2',
+    'bg-gray-800/80',
+    'dark:bg-gray-200/80',
+    'group-hover:opacity-100',
+    'transition-opacity',
+    'group-hover:animation-blink',
+
+    '!w-full',
+    'w-full',
+  ],
   theme: {
     extend: {
       fontFamily: {
-        sans: 'var(--font-sans), system-ui, -apple-system, PingFang SC, "Microsoft YaHei", Segoe UI, Roboto, Helvetica, "noto sans sc", "hiragino sans gb", "sans-serif", Apple Color Emoji, Segoe UI Emoji, Not Color Emoji',
-        serif: '"Noto Serif CJK SC", "Noto Serif SC", var(--font-serif), "Source Han Serif SC", "Source Han Serif", source-han-serif-sc, SongTi SC, SimSum, "Hiragino Sans GB", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif',
-        mono: '"OperatorMonoSSmLig Nerd Font", "Cascadia Code PL", "FantasqueSansMono Nerd Font", "operator mono", JetBrainsMono, "Fira code Retina", "Fira code", "Consolas", Monaco, "Hannotate SC", monospace, -apple-system',
+        sans: 'var(--font-sans),system-ui,-apple-system,PingFang SC,"Microsoft YaHei",Segoe UI,Roboto,Helvetica,noto sans sc,hiragino sans gb,"sans-serif",Apple Color Emoji,Segoe UI Emoji,Not Color Emoji',
+        serif: '"Noto Serif CJK SC","Noto Serif SC",var(--font-serif),"Source Han Serif SC","Source Han Serif",source-han-serif-sc,SongTi SC,SimSum,"Hiragino Sans GB",system-ui,-apple-system,Segoe UI,Roboto,Helvetica,"Microsoft YaHei","WenQuanYi Micro Hei",sans-serif',
+        mono: `"OperatorMonoSSmLig Nerd Font","Cascadia Code PL","FantasqueSansMono Nerd Font","operator mono",JetBrainsMono,"Fira code Retina","Fira code","Consolas", Monaco, "Hannotate SC", monospace, -apple-system`,
       },
+      screens: {
+        'light-mode': { raw: '(prefers-color-scheme: light)' },
+        'dark-mode': { raw: '(prefers-color-scheme: dark)' },
+
+        'w-screen': '100vw',
+        'h-screen': '100vh',
+      },
+      maxWidth: {
+        screen: '100vw',
+      },
+      width: {
+        screen: '100vw',
+      },
+      height: {
+        screen: '100vh',
+      },
+      maxHeight: {
+        screen: '100vh',
+      },
+
       colors: {
         uk: UIKitColors,
+        muted: neutral,
+
         themed: {
           bg_opacity: 'var(--bg-opacity)',
         },
       },
     },
   },
+
   daisyui: {
     logs: false,
     themes: [
       {
         light: {
           'color-scheme': 'light',
+          // 浅葱
           primary: '#33A6B8',
           secondary: '#A8D8B9',
           accent: '#33A6B8',
           'accent-content': '#fafafa',
+
           neutral: UIKitColors.grey3.light,
+
           'base-100': UIKitColors.background.primary.light,
           'base-content': UIKitColors.label.primary.light,
+
           info: UIKitColors.blue.light,
           success: UIKitColors.green.light,
           warning: UIKitColors.orange.light,
           error: UIKitColors.red.light,
+
           '--rounded-btn': '1.9rem',
           '--tab-border': '2px',
           '--tab-radius': '.5rem',
@@ -159,16 +261,22 @@ const config: Config = {
       {
         dark: {
           'color-scheme': 'dark',
+          // 桃
           primary: '#F596AA',
+          // 洗朱
           secondary: '#FB966E',
           accent: '#F596AA',
+
           neutral: UIKitColors.grey3.dark,
+
           'base-100': UIKitColors.background.primary.dark,
           'base-content': UIKitColors.label.primary.dark,
+
           info: UIKitColors.blue.dark,
           success: UIKitColors.green.dark,
           warning: UIKitColors.orange.dark,
           error: UIKitColors.red.dark,
+
           '--rounded-btn': '1.9rem',
           '--tab-border': '2px',
           '--tab-radius': '.5rem',
@@ -177,7 +285,22 @@ const config: Config = {
     ],
     darkTheme: 'dark',
   },
-  plugins: [daisyui],
+
+  plugins: [
+    iconsPlugin({
+      collections: {
+        ...getIconCollections(['mingcute', 'material-symbols']),
+      },
+    }),
+
+    typography,
+    daisyui,
+
+    require('@tailwindcss/container-queries'),
+    require('tailwindcss-animated'),
+    require('tailwindcss-animate'),
+    require('tailwindcss-motion'),
+  ],
 }
 
-export default config
+export default withTV(twConfig)
