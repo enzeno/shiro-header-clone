@@ -18,6 +18,12 @@ interface AggregationData {
   user: {
     name: string
     avatar: string
+    introduce?: string
+    url?: string
+    socialIds?: {
+      github?: string
+      google?: string
+    }
   }
   seo: {
     title: string
@@ -39,8 +45,14 @@ const defaultAppConfig: AppConfig = {
 
 const defaultAggregationData: AggregationData = {
   user: {
-    name: 'Shiro',
-    avatar: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjNjM2NmYxIi8+Cjx0ZXh0IHg9IjIwIiB5PSIyNiIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5TPC90ZXh0Pgo8L3N2Zz4K',
+    name: '静かな森',
+    avatar: '', // No avatar - will show clean user icon fallback
+    introduce: 'A Node.JS Full Stack Developer',
+    url: 'https://shiro.com',
+    socialIds: {
+      github: 'innei',
+      google: 'innei@shiro.com',
+    },
   },
   seo: {
     title: 'Shiro',

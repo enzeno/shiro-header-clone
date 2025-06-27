@@ -68,6 +68,7 @@ export const AnimatedLogo = () => {
   
   if (!isClient) return null
 
+
   return (
     <AnimatePresence mode="wait">
       {!shouldShowMeta && (

@@ -5,7 +5,7 @@ import * as React from 'react'
 import { clsxm } from '@/lib/helper'
 
 export const UserAuthFromIcon: Component = ({ className }) => {
-  // For demo purposes, just show a simple user icon
+  // Show GitHub icon to match the original (assuming GitHub auth provider)
   return (
     <span
       className={clsxm(
@@ -13,7 +13,7 @@ export const UserAuthFromIcon: Component = ({ className }) => {
         className,
       )}
     >
-      <div className="size-2 rounded-full bg-green-500" />
+      <i className="i-mingcute-github-line size-3" />
     </span>
   )
 }

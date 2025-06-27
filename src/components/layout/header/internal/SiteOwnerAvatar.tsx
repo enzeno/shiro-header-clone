@@ -11,7 +11,8 @@ import {
 } from '@/providers/root/aggregation-data-provider'
 
 export const SiteOwnerAvatar: Component = ({ className }) => {
-  const avatar = useAggregationSelector((data) => data.user.avatar)
+  // Use fixed anime avatar for left side logo area only
+  const animeAvatar = 'https://avatars.githubusercontent.com/u/41265413?s=200&v=4'
   const liveId = useAppConfigSelector(
     (config) => config.module?.bilibili?.liveId,
   )
@@ -34,7 +35,6 @@ export const SiteOwnerAvatar: Component = ({ className }) => {
     },
   })
 
-  if (!avatar) return
   return (
     <div
       role={isLiving ? 'button' : 'img'}
@@ -47,15 +47,15 @@ export const SiteOwnerAvatar: Component = ({ className }) => {
       <div
         className={clsxm(
           isLiving ? 'rounded-full' : 'mask mask-squircle',
-          'overflow-hidden',
+          'overflow-hidden relative bg-gray-100 dark:bg-gray-800',
         )}
       >
         <Image
-          src={avatar}
+          src={animeAvatar}
           alt="Site Owner Avatar"
           width={40}
           height={40}
-          className="ring-2 ring-slate-200 dark:ring-neutral-800"
+          className="ring-2 ring-slate-200 dark:ring-neutral-800 object-cover"
         />
       </div>
       {isLiving && (
