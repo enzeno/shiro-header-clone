@@ -1,6 +1,6 @@
 'use client'
 
-import Link from '@/components/next-shims'
+import Link from 'next/link'
 import * as React from 'react'
 import { memo } from 'react'
 

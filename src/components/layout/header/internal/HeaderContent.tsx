@@ -9,7 +9,7 @@ import {
   useMotionValue,
 } from 'motion/react'
 import Link from 'next/link'
-import { usePathname } from '@/lib/next-shims'
+import { usePathname } from 'next/navigation'
 import * as React from 'react'
 import { memo } from 'react'
 
@@ -108,7 +108,7 @@ const ForDesktop: Component<{
       className={clsxm(
         'relative',
         'rounded-full bg-gradient-to-b from-zinc-50/70 to-white/90',
-        'shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur-md',
+        'shadow-lg shadow-zinc-400/5 ring-1 ring-zinc-900/5 backdrop-blur-md',
         'dark:from-zinc-900/70 dark:to-zinc-800/90 dark:ring-zinc-100/10',
         'group [--spotlight-color:oklch(var(--a)_/_0.12)]',
         'pointer-events-auto duration-200',
@@ -122,7 +122,11 @@ const ForDesktop: Component<{
         style={{ background }}
         aria-hidden="true"
       />
-      <div className="flex px-4 font-medium text-zinc-800 dark:text-zinc-200">
+      <m.div 
+        layout 
+        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+        className="flex px-4 font-medium text-zinc-800 dark:text-zinc-200"
+      >
         {headerMenuConfig.map((section) => {
           const subItemActive =
             section.subMenu?.findIndex((item) => {
@@ -145,53 +149,85 @@ const ForDesktop: Component<{
             />
           )
         })}
-      </div>
+      </m.div>
     </m.nav>
   )
 }
 
-const HeaderMenuItem: Component<{
+const HeaderMenuItem = memo<{
   section: IHeaderMenu
-  isActive?: boolean
-  iconLayout?: boolean
+  isActive: boolean
   subItemActive?: IHeaderMenu
-}> = ({ section, isActive, iconLayout = true, subItemActive }) => {
-  const { title, path, subMenu, icon } = section
-
-  const content = (
-    <div
-      className={clsx(
-        'relative flex h-10 items-center gap-2 px-3 transition-all',
-        isActive
-          ? 'text-accent-600 dark:text-accent'
-          : 'opacity-80 hover:opacity-100',
-      )}
-    >
-      {icon && iconLayout && (
-        <span className="flex h-4 w-4 items-center">{icon}</span>
-      )}
-      <span>{title}</span>
-      {subItemActive && (
-        <span className="text-xs opacity-60"> · {subItemActive.title}</span>
-      )}
-    </div>
-  )
-
-  if (path.startsWith('http')) {
-    return (
-      <a href={path} target="_blank" rel="noreferrer">
-        {content}
-      </a>
-    )
-  }
-
-  if (path === '#') {
-    return <MenuPopover subMenu={subMenu}>{content}</MenuPopover>
-  }
+  iconLayout?: boolean
+}>(({ section, isActive, subItemActive, iconLayout }) => {
+  const href = section.path
 
   return (
-    <Link href={path} className="relative">
-      {content}
-    </Link>
+    <MenuPopover subMenu={section.subMenu} key={href}>
+      <AnimatedItem
+        href={href}
+        isActive={isActive}
+        className="transition-[padding]"
+      >
+        <m.span layout className="relative flex items-center">
+          {isActive && (
+            <m.span
+              layoutId={iconLayout ? 'header-menu-icon' : undefined}
+              className="mr-2 flex items-center"
+            >
+              {subItemActive?.icon ?? section.icon}
+            </m.span>
+          )}
+          <m.span 
+            layout 
+            layoutId={`menu-text-${section.path}`}
+            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+          >
+            {subItemActive?.title ?? section.title}
+          </m.span>
+        </m.span>
+      </AnimatedItem>
+    </MenuPopover>
+  )
+})
+HeaderMenuItem.displayName = 'HeaderMenuItem'
+
+function AnimatedItem({
+  href,
+  children,
+  className,
+  isActive,
+}: {
+  href: string
+  children: React.ReactNode
+  className?: string
+  isActive?: boolean
+}) {
+  const isExternal = href.startsWith('http')
+  const As = isExternal ? 'a' : Link
+  return (
+    <div>
+      <As
+        href={href}
+        className={clsxm(
+          'relative block whitespace-nowrap px-4 py-2 transition',
+          isActive ? 'text-accent' : 'hover:text-accent/80',
+          isActive ? 'active' : '',
+          className,
+        )}
+        target={isExternal ? '_blank' : undefined}
+      >
+        {children}
+        {isActive && (
+          <m.span
+            className={clsx(
+              'absolute inset-x-1 -bottom-px h-px',
+              'bg-gradient-to-r from-accent/0 via-accent/70 to-accent/0',
+            )}
+            layoutId="active-nav-item"
+          />
+        )}
+      </As>
+    </div>
   )
 }

@@ -14,7 +14,7 @@ import {
   HeaderLeftButtonArea,
   HeaderLogoArea,
 } from './internal/HeaderArea'
-import { HeaderContent } from './internal/HeaderContent.optimized'
+import { HeaderContent } from './internal/HeaderContent'
 import { HeaderDataConfigureProvider } from './internal/HeaderDataConfigureProvider'
 import { HeaderDrawerButton } from './internal/HeaderDrawerButton'
 import { HeaderMeta } from './internal/HeaderMeta'
