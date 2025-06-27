@@ -10,10 +10,16 @@ export const HeaderActionButton = forwardRef<
     role="button"
     tabIndex={1}
     className={clsx(
-      'group size-10 rounded-full bg-base-100',
-      'px-3 text-sm ring-1 ring-zinc-900/5 transition dark:ring-white/10 dark:hover:ring-white/20',
-
-      'center flex',
+      'group size-10 rounded-full center flex',
+      // Background styling to match desktop header
+      'bg-gradient-to-b from-zinc-50/70 to-white/90',
+      'shadow-lg shadow-zinc-400/5 ring-1 ring-zinc-900/5 backdrop-blur-md',
+      'dark:from-zinc-900/70 dark:to-zinc-800/90 dark:ring-zinc-100/10',
+      // Hover effects
+      'transition-all duration-200 hover:shadow-xl hover:ring-zinc-900/10',
+      'dark:hover:ring-zinc-100/20',
+      // Text and padding
+      'px-3 text-sm',
     )}
     {...rest}
     ref={ref}

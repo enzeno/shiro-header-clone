@@ -23,8 +23,8 @@ export default function Posts() {
   return (
     <main>
       <HeaderMetaInfoSetting />
-      <div style={{ minHeight: "300vh", padding: "120px 20px 20px" }}>
-        <div style={{ maxWidth: "800px", margin: "0 auto" }}>
+      <div style={{ minHeight: '500vh', padding: '120px 20px 20px' }}>
+        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
           <h1 style={{ fontSize: "2.5rem", fontWeight: "bold", marginBottom: "2rem" }}>
             📝 Posts & Articles
           </h1>

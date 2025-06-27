@@ -170,14 +170,19 @@ const HeaderMenuItem = memo<{
         className="transition-[padding]"
       >
         <m.span layout className="relative flex items-center">
-          {isActive && (
-            <m.span
-              layoutId={iconLayout ? 'header-menu-icon' : undefined}
-              className="mr-2 flex items-center"
-            >
-              {subItemActive?.icon ?? section.icon}
-            </m.span>
-          )}
+          <AnimatePresence mode="popLayout">
+            {isActive && (
+              <m.span
+                layoutId={iconLayout ? 'header-menu-icon' : undefined}
+                className="mr-2 flex items-center"
+                initial={false}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+              >
+                {subItemActive?.icon ?? section.icon}
+              </m.span>
+            )}
+          </AnimatePresence>
           <m.span 
             layout 
             layoutId={`menu-text-${section.path}`}

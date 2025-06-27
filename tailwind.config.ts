@@ -180,6 +180,7 @@ const twConfig: Config = {
     'bg-opacity-0',
     'hover:bg-opacity-100',
     'transition-background',
+    'bg-themed-bg_opacity',
 
     'w-[1px]',
     'h-8',

@@ -1,4 +1,5 @@
 import { atom, useAtomValue, useSetAtom } from 'jotai'
+import { usePathname } from 'next/navigation'
 import { useEffect } from 'react'
 
 import { useIsMobile } from '@/atoms/hooks'
@@ -18,7 +19,12 @@ export const useMenuOpacity = () => {
   return 1 - headerOpacity
 }
 
-export const useMenuVisibility = () => useMenuOpacity() > 0
+export const useMenuVisibility = () => {
+  const menuOpacity = useMenuOpacity()
+  const pathname = usePathname()
+  if (pathname === '/') return true
+  return menuOpacity > 0
+}
 
 export const useHeaderBgOpacity = () => {
   const threshold = 84 + 63 + 50
@@ -48,8 +54,9 @@ const headerMetaShouldShowAtom = atom((get) => {
 
 export const useHeaderMetaShouldShow = () => {
   const v = useMenuVisibility()
-
-  return useAtomValue(headerMetaShouldShowAtom) && !v
+  const pathname = usePathname()
+  const isHomePage = pathname === '/'
+  return useAtomValue(headerMetaShouldShowAtom) && !v && !isHomePage
 }
 
 export const useSetHeaderMetaInfo = () => {

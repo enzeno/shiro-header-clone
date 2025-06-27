@@ -3,7 +3,11 @@
 import { AnimatePresence } from 'motion/react'
 import { Fragment } from 'react'
 
+import { getAdminUrl } from '@/atoms'
+import { useIsLogged } from '@/atoms/hooks'
+import { useSessionReader } from '@/atoms/hooks/reader'
 import { Image } from '@/components/next-shims'
+import { UserArrowLeftIcon } from '@/components/icons/user-arrow-left'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,116 +17,156 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { EllipsisHorizontalTextWithTooltip } from '@/components/ui/typography'
+import { useIsClient } from '@/hooks/common/use-is-client'
+import { authClient } from '@/lib/authjs'
+import { getToken, removeToken } from '@/lib/cookie'
+import { apiClient } from '@/lib/request'
 import { useAggregationSelector } from '@/providers/root/aggregation-data-provider'
+import { useHasProviders, useOauthLoginModal } from '@/queries/hooks/authjs'
 
+import { HeaderActionButton } from './HeaderActionButton'
 import { UserAuthFromIcon } from './UserAuthFromIcon'
 
 const OwnerAvatar = () => {
-  const ownerAvatar = useAggregationSelector((s) => s.user.avatar)
+  const ownerAvatar = useAggregationSelector((s) => s.user.avatar)!
 
   return (
     <div className="pointer-events-auto relative flex items-center justify-center">
-      <div className="relative size-9 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
-        {ownerAvatar ? (
-          <Image
-            className="size-9 rounded-full object-cover"
-            height={36}
-            width={36}
-            src={ownerAvatar}
-            alt="site owner"
-            onError={(e) => {
-              e.currentTarget.style.display = 'none'
-            }}
-          />
-        ) : null}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <i className="i-mingcute-user-3-fill size-5 text-gray-400 dark:text-gray-500" />
-        </div>
-      </div>
+      <Image
+        className="rounded-full"
+        height={36}
+        width={36}
+        src={ownerAvatar}
+        alt="site owner"
+      />
       <UserAuthFromIcon className="absolute -bottom-1 right-0" />
     </div>
   )
 }
 
 export function UserAuth() {
-  const ownerData = useAggregationSelector((s) => s.user)
-  
+  const isOwner = useIsLogged()
+  const isClient = useIsClient()
+  const session = useSessionReader()
+
+  const hasProviders = useHasProviders()
+
+  const presentOauthModal = useOauthLoginModal()
+  if (!isClient) return null
+
   return (
     <AnimatePresence>
       <DropdownMenu>
         <DropdownMenuTrigger>
-          <OwnerAvatar />
+          {isOwner ? (
+            <OwnerAvatar />
+          ) : session ? (
+            <ReaderAvatar />
+          ) : (
+            hasProviders && (
+              <HeaderActionButton
+                onClick={() => {
+                  presentOauthModal()
+                }}
+                aria-label="Reader Login"
+              >
+                <UserArrowLeftIcon className="size-4" />
+              </HeaderActionButton>
+            )
+          )}
         </DropdownMenuTrigger>
 
-        <DropdownMenuPortal>
-          <DropdownMenuContent
-            sideOffset={8}
-            align="end"
-            className="relative flex max-w-[30ch] flex-col"
-          >
-            <DropdownMenuLabel className="min-w-0">
-              <div className="-mt-1 flex min-w-0 items-center gap-2">
-                <div className="relative size-8 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
-                  {ownerData.avatar ? (
-                    <img
-                      src={ownerData.avatar}
-                      className="size-8 rounded-full object-cover"
-                      alt={ownerData.name}
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none'
-                      }}
-                    />
-                  ) : null}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <i className="i-mingcute-user-3-fill size-5 text-gray-400 dark:text-gray-500" />
-                  </div>
-                </div>
-                <div className="min-w-0 max-w-40 leading-none">
-                  <div className="truncate font-medium">{ownerData.name}</div>
-                  <div className="min-w-0 truncate text-xs text-base-content/60">
-                    {ownerData.introduce || 'Site Owner'}
-                  </div>
-                </div>
-              </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            
-            {/* Social Links */}
-            {ownerData.socialIds?.github && (
+        {(session || isOwner) && (
+          <DropdownMenuPortal>
+            <DropdownMenuContent
+              sideOffset={8}
+              align="end"
+              className="relative flex max-w-[30ch] flex-col"
+            >
+              {session && (
+                <Fragment>
+                  <DropdownMenuLabel className="text-xs text-base-content/60">
+                    Account
+                  </DropdownMenuLabel>
+                  <DropdownMenuLabel className="min-w-0">
+                    <div className="-mt-1 flex min-w-0 items-center gap-2">
+                      <img
+                        src={session.image}
+                        className="size-8 rounded-full"
+                      />
+                      <div className="min-w-0 max-w-40 leading-none">
+                        <div className="truncate">{session.name}</div>
+                        <EllipsisHorizontalTextWithTooltip className="min-w-0 truncate text-xs text-base-content/60">
+                          {session?.handle
+                            ? `@${session.handle}`
+                            : session?.email}
+                        </EllipsisHorizontalTextWithTooltip>
+                      </div>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                </Fragment>
+              )}
+
+              {isOwner && (
+                <Fragment>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      window.open('/dashboard', '_blank')
+                    }}
+                    icon={<i className="i-mingcute-dashboard-3-line size-4" />}
+                  >
+                    轻管理
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      const adminUrl = getAdminUrl()
+                      if (adminUrl) {
+                        window.open(adminUrl, '_blank')
+                      }
+                    }}
+                    icon={<i className="i-mingcute-dashboard-2-line size-4" />}
+                  >
+                    控制台
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                </Fragment>
+              )}
               <DropdownMenuItem
-                onClick={() => {
-                  window.open(`https://github.com/${ownerData.socialIds.github}`, '_blank')
+                onClick={async () => {
+                  getToken() && apiClient.user.proxy('logout').post()
+                  removeToken()
+                  await authClient.signOut().then((res) => {
+                    if (res.data?.success) {
+                      window.location.reload()
+                    }
+                  })
                 }}
-                icon={<i className="i-mingcute-github-line size-4" />}
+                icon={<i className="i-mingcute-exit-line size-4" />}
               >
-                GitHub
+                登出
               </DropdownMenuItem>
-            )}
-            
-            {ownerData.socialIds?.google && (
-              <DropdownMenuItem
-                onClick={() => {
-                  window.open(`mailto:${ownerData.socialIds.google}`, '_blank')
-                }}
-                icon={<i className="i-mingcute-google-line size-4" />}
-              >
-                Google
-              </DropdownMenuItem>
-            )}
-            
-            {ownerData.url && (
-              <DropdownMenuItem
-                onClick={() => {
-                  window.open(ownerData.url, '_blank')
-                }}
-                icon={<i className="i-mingcute-external-link-line size-4" />}
-              >
-                Website
-              </DropdownMenuItem>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenuPortal>
+            </DropdownMenuContent>
+          </DropdownMenuPortal>
+        )}
       </DropdownMenu>
     </AnimatePresence>
+  )
+}
+
+const ReaderAvatar = () => {
+  const session = useSessionReader()!
+  return (
+    <div className="pointer-events-auto relative flex items-center justify-center">
+      <Image
+        className="rounded-full"
+        height={36}
+        width={36}
+        src={session.image}
+        alt={session.name}
+      />
+      <UserAuthFromIcon className="absolute -bottom-1 right-0" />
+    </div>
   )
 }

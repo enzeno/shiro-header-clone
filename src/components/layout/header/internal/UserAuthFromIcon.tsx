@@ -2,10 +2,18 @@
 
 import * as React from 'react'
 
+import { useSessionReader } from '@/atoms/hooks/reader'
+import { getStrategyIconComponent } from '@/components/ui/user/UserAuthStrategyIcon'
 import { clsxm } from '@/lib/helper'
 
 export const UserAuthFromIcon: Component = ({ className }) => {
-  // Show GitHub icon to match the original (assuming GitHub auth provider)
+  const session = useSessionReader()
+  const provider = session?.provider
+  const StrategyIcon = provider && getStrategyIconComponent(provider)
+
+  if (!StrategyIcon) {
+    return null
+  }
   return (
     <span
       className={clsxm(
@@ -13,7 +21,7 @@ export const UserAuthFromIcon: Component = ({ className }) => {
         className,
       )}
     >
-      <i className="i-mingcute-github-line size-3" />
+      <StrategyIcon className="size-3" />
     </span>
   )
 }

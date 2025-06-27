@@ -22,6 +22,7 @@ export default function RootLayout({
         <WebAppProviders>
           <AccentColorStyleInjector />
           <BfcacheOptimizer />
+          <div className="page-head-gradient" />
           <ShiroHeader />
           {children}
         </WebAppProviders>
