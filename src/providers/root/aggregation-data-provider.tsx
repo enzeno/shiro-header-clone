@@ -48,11 +48,15 @@ const defaultAggregationData: AggregationData = {
   },
 }
 
+// Create contexts with default values
 const AppConfigContext = createContext<AppConfig>(defaultAppConfig)
 const AggregationDataContext = createContext<AggregationData>(defaultAggregationData)
 
-export const AggregationDataProvider: React.FC<{ children: React.ReactNode }> = ({ 
+// Provider component
+export const AggregationDataProvider = ({ 
   children 
+}: { 
+  children: React.ReactNode 
 }) => {
   return (
     <AppConfigContext.Provider value={defaultAppConfig}>
@@ -63,6 +67,7 @@ export const AggregationDataProvider: React.FC<{ children: React.ReactNode }> = 
   )
 }
 
+// Selector hooks
 export const useAppConfigSelector = <T,>(selector: (config: AppConfig) => T): T => {
   const config = useContext(AppConfigContext)
   return selector(config)

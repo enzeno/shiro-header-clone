@@ -45,6 +45,7 @@ const Item = memo(function Item(props: IHeaderMenu) {
       href={`${path}`}
       className="relative flex w-full items-center justify-around space-x-2 px-4 py-3 duration-200 hover:bg-accent/5 hover:text-accent"
       role="button"
+      prefetch={!path.startsWith('http')}
     >
       {!!icon && <span>{icon}</span>}
       <span>{title}</span>

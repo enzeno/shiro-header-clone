@@ -1,12 +1,13 @@
 'use client'
 
 import { useEffect } from 'react'
-import { Header } from '@/components/layout/header/Header'
 import { useSetHeaderMetaInfo } from '@/components/layout/header/hooks'
 
-export default function Notes() {
+// This component is responsible for setting the header meta information
+// It's extracted to match the pattern in the original repo
+const HeaderMetaInfoSetting = () => {
   const setHeaderMetaInfo = useSetHeaderMetaInfo()
-
+  
   useEffect(() => {
     setHeaderMetaInfo({
       title: 'Personal Notes',
@@ -14,10 +15,14 @@ export default function Notes() {
       slug: '/notes'
     })
   }, [setHeaderMetaInfo])
+  
+  return null
+}
 
+export default function Notes() {
   return (
     <main>
-      <Header />
+      <HeaderMetaInfoSetting />
       <div style={{ minHeight: "300vh", padding: "120px 20px 20px" }}>
         <div style={{ maxWidth: "800px", margin: "0 auto" }}>
           <h1 style={{ fontSize: "2.5rem", fontWeight: "bold", marginBottom: "2rem" }}>

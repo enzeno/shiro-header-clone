@@ -60,34 +60,36 @@ const TapableLogo = () => {
     </button>
   )
 }
+
 export const AnimatedLogo = () => {
   const shouldShowMeta = useHeaderMetaShouldShow()
-
   const isDesktop = useViewport(($) => $.lg && $.w !== 0)
-
   const isClient = useIsClient()
+  
   if (!isClient) return null
 
-  if (isDesktop)
-    return (
-      <>
-        <TapableLogo />
-        <Activity />
-      </>
-    )
-
   return (
-    <AnimatePresence>
+    <AnimatePresence mode="wait">
       {!shouldShowMeta && (
         <m.div
-          layout
+          key="logo"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
           className="flex items-center !will-change-[unset]"
         >
-          <Activity />
-          <TapableLogo />
+          {isDesktop ? (
+            <>
+              <TapableLogo />
+              <Activity />
+            </>
+          ) : (
+            <>
+              <Activity />
+              <TapableLogo />
+            </>
+          )}
         </m.div>
       )}
     </AnimatePresence>

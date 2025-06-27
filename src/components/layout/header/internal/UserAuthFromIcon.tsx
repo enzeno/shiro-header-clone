@@ -1,20 +1,11 @@
 'use client'
-'use client'
 
 import * as React from 'react'
 
-import { useSessionReader } from '@/atoms/hooks/reader'
-import { getStrategyIconComponent } from '@/components/ui/user/UserAuthStrategyIcon'
 import { clsxm } from '@/lib/helper'
 
 export const UserAuthFromIcon: Component = ({ className }) => {
-  const session = useSessionReader()
-  const provider = session?.provider
-  const StrategyIcon = provider && getStrategyIconComponent(provider)
-
-  if (!StrategyIcon) {
-    return null
-  }
+  // For demo purposes, just show a simple user icon
   return (
     <span
       className={clsxm(
@@ -22,7 +13,7 @@ export const UserAuthFromIcon: Component = ({ className }) => {
         className,
       )}
     >
-      <StrategyIcon className="size-3" />
+      <div className="size-2 rounded-full bg-green-500" />
     </span>
   )
 }

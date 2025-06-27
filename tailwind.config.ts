@@ -1,3 +1,7 @@
+const path = require('path')
+
+import './plugins/tw-css-plugin'
+import(path.resolve(__dirname, './src/styles/layer.css'))
 import daisyui from 'daisyui'
 import type { Config } from 'tailwindcss'
 

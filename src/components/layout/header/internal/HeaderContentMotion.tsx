@@ -8,7 +8,7 @@ import {
   useMotionTemplate,
   useMotionValue,
 } from 'motion/react'
-import Link from 'next/link'
+import Link from '@/components/next-shims'
 import { usePathname } from '@/lib/next-shims'
 import * as React from 'react'
 import { memo } from 'react'
@@ -17,13 +17,15 @@ import { RootPortal } from '@/components/ui/portal'
 import useDebounceValue from '@/hooks/common/use-debounce-value'
 import { clsxm } from '@/lib/helper'
 import { useIsScrollUpAndPageIsOver } from '@/providers/root/page-scroll-info-provider'
+import { microReboundPreset } from '@/constants/spring'
 
 import type { IHeaderMenu } from '../config'
 import { useHeaderConfig } from './HeaderDataConfigureProvider'
-import { useHeaderHasMetaInfo, useMenuOpacity } from './hooks'
+import { useHeaderHasMetaInfo, useMenuOpacity, useHeaderBgOpacity } from './hooks'
 import { MenuPopover } from './MenuPopover'
 
-export const HeaderContent = () => {
+// Main motion-enabled header content
+export default function HeaderContentMotion() {
   return (
     <LayoutGroup>
       <AnimatedMenu>
@@ -62,15 +64,21 @@ const AccessibleMenu: Component = () => {
 
 const AnimatedMenu: Component = ({ children }) => {
   const opacity = useMenuOpacity()
-
+  const headerOpacity = useHeaderBgOpacity()
   const hasMetaInfo = useHeaderHasMetaInfo()
-  const shouldHideNavBg = !hasMetaInfo && opacity === 0
+  
+  // Determine if we should hide the nav background
+  const shouldHideNavBg = !hasMetaInfo || headerOpacity < 0.9
+  
+  // Determine menu visibility
+  const menuVisible = headerOpacity < 0.9 || !hasMetaInfo
+  
   return (
     <m.div
       className="duration-100"
       style={{
         opacity: hasMetaInfo ? opacity : 1,
-        visibility: opacity === 0 && hasMetaInfo ? 'hidden' : 'visible',
+        visibility: menuVisible ? 'visible' : 'hidden',
       }}
     >
       {/* @ts-ignore */}
@@ -150,48 +158,81 @@ const ForDesktop: Component<{
   )
 }
 
-const HeaderMenuItem: Component<{
+const HeaderMenuItem = memo<{
   section: IHeaderMenu
-  isActive?: boolean
-  iconLayout?: boolean
+  isActive: boolean
   subItemActive?: IHeaderMenu
-}> = ({ section, isActive, iconLayout = true, subItemActive }) => {
-  const { title, path, subMenu, icon } = section
-
-  const content = (
-    <div
-      className={clsx(
-        'relative flex h-10 items-center gap-2 px-3 transition-all',
-        isActive
-          ? 'text-accent-600 dark:text-accent'
-          : 'opacity-80 hover:opacity-100',
-      )}
-    >
-      {icon && iconLayout && (
-        <span className="flex h-4 w-4 items-center">{icon}</span>
-      )}
-      <span>{title}</span>
-      {subItemActive && (
-        <span className="text-xs opacity-60"> · {subItemActive.title}</span>
-      )}
-    </div>
-  )
-
-  if (path.startsWith('http')) {
-    return (
-      <a href={path} target="_blank" rel="noreferrer">
-        {content}
-      </a>
-    )
-  }
-
-  if (path === '#') {
-    return <MenuPopover subMenu={subMenu}>{content}</MenuPopover>
-  }
+  iconLayout?: boolean
+}>(({ section, isActive, subItemActive, iconLayout }) => {
+  const href = section.path
 
   return (
-    <Link href={path} className="relative">
-      {content}
-    </Link>
+    <MenuPopover subMenu={section.subMenu} key={href}>
+      <AnimatedItem
+        href={href}
+        isActive={isActive}
+        className="transition-[padding]"
+      >
+        <m.span 
+          className="relative flex items-center"
+          layout
+          transition={{
+            layout: microReboundPreset
+          }}
+        >
+          {isActive && (
+            <m.span
+              layoutId={iconLayout ? 'header-menu-icon' : undefined}
+              className="mr-2 flex items-center"
+            >
+              {subItemActive?.icon ?? section.icon}
+            </m.span>
+          )}
+          <span>{subItemActive?.title ?? section.title}</span>
+        </m.span>
+      </AnimatedItem>
+    </MenuPopover>
+  )
+})
+HeaderMenuItem.displayName = 'HeaderMenuItem'
+
+function AnimatedItem({
+  href,
+  children,
+  className,
+  isActive,
+}: {
+  href: string
+  children: React.ReactNode
+  className?: string
+  isActive?: boolean
+}) {
+  const isExternal = href.startsWith('http')
+  const As = isExternal ? 'a' : Link
+  return (
+    <div>
+      <As
+        href={href}
+        className={clsxm(
+          'relative block whitespace-nowrap px-4 py-2 transition',
+          isActive ? 'text-accent' : 'hover:text-accent/80',
+          isActive ? 'active' : '',
+          className,
+        )}
+        target={isExternal ? '_blank' : undefined}
+        prefetch={!isExternal}
+      >
+        {children}
+        {isActive && (
+          <m.span
+            className={clsx(
+              'absolute inset-x-1 -bottom-px h-px',
+              'bg-gradient-to-r from-accent/0 via-accent/70 to-accent/0',
+            )}
+            layoutId="active-nav-item"
+          />
+        )}
+      </As>
+    </div>
   )
 }

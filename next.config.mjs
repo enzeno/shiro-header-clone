@@ -62,7 +62,7 @@ const nextConfig = {
       },
     ];
   },
-  // Enable bundle analyzer in development
+  // Enable bundle analyzer when ANALYZE=true
   ...(process.env.ANALYZE === 'true' && {
     webpack: (config, { isServer }) => {
       if (!isServer) {
